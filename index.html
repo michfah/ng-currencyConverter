@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html ng-app="currencyCalc">
+	
+<head>
+	
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Currency Calculator"/>
+	
+    <title>Currency Calculator</title>
+	
+	  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+	  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+	  <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+	  
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/lodash.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/ngStorage.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/money.min.js"></script>
+    <script src="js/app.js"></script>
+	
+</head>
+
+<body>
+	
+  <div id="main" ng-controller="CalcController">
+	
+    <div id="header" ng-class="(netConnectivity == 1 || netConnectivity == 3) ? 'labelInactive' : 'labelActive'"
+		 class="container-fluid">
+      <h2 class="text-center">XE/JS Currency Conversion</h2>
+    </div>
+	
+    <div id="dateHeader" class="container-fluid">
+		<p ng-if="(netConnectivity == 0) || (netConnectivity == 2)" class="text-center">
+		  Currency rates as of {{currencyData.date | date: 'dd/MM/yyyy'}}
+		</p>
+		<p ng-if="(netConnectivity == 1) || (netConnectivity == 3)" class="text-center">
+		  No Internet connection!
+		</p>
+    </div>
+	
+      <div class="container-fluid">
+		
+        <div class="row">		
+			<div id="leftcolumn" class="col-xs-6">
+				<div class="form-group">
+          		  <label for="currency1">Amount:</label>
+          		  <input ng-disabled="(netConnectivity == 1) || (netConnectivity == 3)"
+						 type="number"
+						 class="form-control"
+						 id="currency1"
+						 placeholder="Enter Amount"
+						 ng-maxlength="10"
+						 step="0.01"
+						 ng-model="moneyAmount"
+						 input-block
+						 input-block-length="validLength">
+				</div>
+			</div>
+			
+			<div id="rightcolumn" class="col-xs-6">
+				<div class="row">
+					<label id="labelCash1" for="cash1">Currency:</label><br>
+					<div class="col-xs-9">
+					<!-- <select class="form-control" ng-options="k as k for (k,v) in currencyData.rates" name="category" id="cash1" ng-change="currencyChanged(moneyAmount, selectedCur)" ng-model="selectedCur" required></select> -->
+						<select id="currencySelector"
+								ng-disabled="(netConnectivity == 1) || (netConnectivity == 3)"
+								class="form-control"
+								ng-options="item.currency as item.currency for item in parsedList"
+								name="category"
+								id="cash1"
+								ng-model="selectedCur"
+								required>
+						</select>
+					</div>
+               <!-- <select class="form-control" name="category" id="cash1" ng-change="currencyChanged(moneyAmount, selectedCur)" ng-model="selectedCur" required> -->
+               <!-- <option ng-repeat="(k, v) in currencyData.rates" value="{{k}}" ng-selected="$first">{{k}}</option> -->
+               <div class="col-xs-3">
+					<img id="selectedFlag"
+						ng-if="(netConnectivity == 0) || (netConnectivity == 2)"
+						 ng-src="images/flags/48/{{selectedCur}}.png">
+					</img>
+				</div>
+
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-12">
+				<button id="goButton" ng-click="currencyChanged(moneyAmount, selectedCur)">Convert</button>
+			</div>
+		</div>
+
+      </div>
+    </div>
+		
+    <div id="dateHeader" class="container-fluid" ng-show="currencyList[0]">
+      <p class="text-center">Exchange rates provided by Fixer.io</p>
+    </div>
+	
+    <div id="infoText" ng-hide="currencyList[0]">
+		<div id="textSuccess"
+			 ng-if="(netConnectivity == 0) || (netConnectivity == 2)">
+				Enter the cash amount and select your currency to view the exchange rates
+		</div><br>
+		<div ng-if="(netConnectivity == 0) || (netConnectivity == 2)">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+		</div>
+		<div id="textError"
+			 ng-if="(netConnectivity == 1) || (netConnectivity == 3)">
+				An error has occurred!<br>Please check your Internet connection!
+		</div><br>
+		<div ng-if="(netConnectivity == 1) || (netConnectivity == 3)">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		</div>
+    </div>
+	
+    <div id="currencyList" ng-show="currencyList[0]">
+        <div ng-animate="'animate'"
+			  ng-repeat="curr in currencyList | myFormat: selectedCur"
+			  ng-class-even="'evenCurrencyStyle'"
+			  ng-class-odd="'oddCurrencyStyle'">
+				<img id="rowFlag" ng-src="images/flags/48/{{curr.currency}}.png"></img>&nbsp
+					{{curr.amount}}
+					<b>{{curr.base}}</b> =
+					{{curr.rate}}
+					<b>{{curr.currency}}</b>
+        </div>
+    </div>
+</div>
+  
+</body>
+
+</html>

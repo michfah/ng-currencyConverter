@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget xmlns:tizen="http://tizen.org/ns/widgets"
+        xmlns="http://www.w3.org/ns/widgets"
+        id="http://yourdomain/CurrencyCalc"
+        version="1.0.0"
+        viewmodes="fullscreen">
+    
+    <access origin="http://api.fixer.io" subdomains="true"></access>
+    <tizen:application id="cDnoRTDDS6.CurrencyCalc" package="cDnoRTDDS6" required_version="2.4"/>
+    <content src="index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <icon src="iconCurrencyCalc2.png" height="117" width="117"/>
+    
+    <name>Currency Calculator</name>
+    
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:profile name="mobile"/>
+
+</widget>
